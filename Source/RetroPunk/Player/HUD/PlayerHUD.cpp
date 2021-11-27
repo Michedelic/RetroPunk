@@ -6,6 +6,7 @@
 #include "../Components/HealthComponent.h"
 #include "../../AI/Pawns/BotEnemy.h"
 #include "Kismet/GameplayStatics.h"
+#include "GameFramework/CharacterMovementComponent.h"
 
 
 APlayerHUD::APlayerHUD()
@@ -23,8 +24,8 @@ void APlayerHUD::DrawHUD()
 
 	if (ATestCharacter* player = Cast<ATestCharacter>(GetOwningPawn()))
 	{
-		AddFloat(L"Velocity: ",player->GetVelocity().Size() / 100.0f);
-		AddFloat(L"Player Yaw: ",player->GetActorRotation().Yaw);
+		AddFloat(L"Max Speed: ",player->GetMovementComponent()->GetMaxSpeed());
+		AddFloat(L"Player Life: ",player->HealthComponent->CurrentHealth);
 		//AddFloat(L"Bot Health: ",bot->CurrentBotHealth);
 		//AddFloat(L"Health: ",health->CurrentHealth);
 		//AddFloat(L"Dash Timer: ", player->DashStop);

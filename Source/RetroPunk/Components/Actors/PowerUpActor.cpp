@@ -38,7 +38,7 @@ void APowerUpActor::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-	UE_LOG(LogTemp, Warning, TEXT("CURRENT SPEED: %f"), PlayerCharacter->GetCharacterMovement()->GetMaxSpeed());
+	//UE_LOG(LogTemp, Warning, TEXT("CURRENT SPEED: %f"), PlayerCharacter->GetCharacterMovement()->GetMaxSpeed());
 
 }
 
@@ -46,35 +46,41 @@ void APowerUpActor::Tick(float DeltaTime)
 
 void APowerUpActor::OnTickPowerUp()
 {
+	/*TicksProcessed++;
+
+	OnPowerUpTicked();*/
+
+	
+
 	TicksProcessed++;
 
-	OnPowerUpTicked();
+	//OnPowerUpTicked();
+
+	FPowerUpTicked();
 
 	if (TicksProcessed >= TotalNrOfTicks)
 	{
+		OnExpired();
 
-		//OnExpired();
 
-		ExpirePowerUp();
+		/*delete timer*/
+		GetWorldTimerManager().ClearTimer(TimerHandle_PowerupTick);
 
-		//ELIMINAR TIEMPO
-		GetWorldTimerManager().ClearTimer(PowerUpTick_TimeHandle);
+
+
 	}
 }
 
 void APowerUpActor::ActivatePowerUp()
 {
 	
-	//OnActivated();
+	OnActivated();
 
-	//this->Destroy();
+	//OnExpired();
 
-	PowerUpActivated();
-	
-	
 	if (PowerUpInterval > 0.0f)
 	{
-		GetWorldTimerManager().SetTimer(PowerUpTick_TimeHandle,this,&APowerUpActor::OnTickPowerUp,PowerUpInterval,false);
+		GetWorldTimerManager().SetTimer(TimerHandle_PowerupTick, this, &APowerUpActor::OnTickPowerUp, PowerUpInterval, true);
 	}
 	else {
 		OnTickPowerUp();
@@ -97,8 +103,16 @@ void APowerUpActor::ExpirePowerUp()
 {
 	PlayerCharacter->GetCharacterMovement()->MaxWalkSpeed /= 2;
 
-
 	
+}
+
+void APowerUpActor::FPowerUpTicked()
+{
+	if (PlayerCharacter->HealthComponent)
+	{
+		PlayerCharacter->HealthComponent->HandleHealPowerUp(HealingAmount);
+		PrefabMesh->SetVisibility(false,true);
+	}
 }
 
 #pragma endregion

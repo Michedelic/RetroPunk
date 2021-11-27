@@ -39,7 +39,7 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = PowerUp)
 		int32 TicksProcessed = 0;
 
-	FTimerHandle PowerUpTick_TimeHandle;
+	FTimerHandle TimerHandle_PowerupTick;
 
 	UFUNCTION(BlueprintCallable,Category=PowerUp)
 	void OnTickPowerUp();
@@ -51,9 +51,15 @@ public:
 		float CurrentSpeed = 0.0f;
 
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = PowerUp)
+		float HealingAmount = 20.0f;
+
 	void PowerUpActivated();
 
 	void ExpirePowerUp();
+
+
+	void FPowerUpTicked();
 
 
 	//funciones (eventos) donde la logica debe implementarse 100% en Blueprints

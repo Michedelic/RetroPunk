@@ -47,6 +47,7 @@ public:
 
 
 	//clase del component de salud
+	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category="Heal Component")
 	 UHealthComponent* HealthComponent;
 
 	 //Rotar Personaje hacia la direccion del puntero del mouse
@@ -124,7 +125,7 @@ public:
 
 	//Funcion para la salud
 	UFUNCTION(BlueprintCallable,Category="Player")
-	void OnHealthChanged(UHealthComponent* OwningHealthComponent, float Health, float HealthDelta, const class UDamageType* DamageType, class AController* InstigatedBy, AActor* DamageCauser);
+	void OnHealthChangedComponent(UHealthComponent* OwningHealthComponent, float Health, float HealthDelta, const class UDamageType* DamageType, class AController* InstigatedBy, AActor* DamageCauser);
 
 	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category="Player")
 	bool bDied = false;

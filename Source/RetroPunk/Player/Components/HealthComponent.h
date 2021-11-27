@@ -18,7 +18,7 @@ public:
 	UHealthComponent();
 
 	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category=Player)
-	float DefaultHealth = 100.0f;
+	float DefaultHealth = 40.0f;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Player)
 		float CurrentHealth = 0.0f;
@@ -26,6 +26,10 @@ public:
 
 	UFUNCTION(BlueprintCallable,Category=Player)
 		void HandleTakeAnyDamage(AActor* DamagedActor, float Damage, const class UDamageType* DamageType, class AController* InstigatedBy, AActor* DamageCauser);
+
+	//Funcion para aumentar vida como Power Up
+	UFUNCTION(BlueprintCallable,Category=PowerUp)
+	void HandleHealPowerUp(float HealAmount);
 
 protected:
 	// Called when the game starts
@@ -38,5 +42,6 @@ public:
 	UPROPERTY(BlueprintAssignable,Category="Events")
 		FOnHealthChangedSignature OnHealthChanged;
 
+	float GetHealth() const;
 		
 };

@@ -2,6 +2,7 @@
 
 
 #include "PickUpActor.h"
+#include "TimerManager.h"
 
 // Sets default values
 APickUpActor::APickUpActor()
@@ -37,16 +38,7 @@ void APickUpActor::Tick(float DeltaTime)
 
 }
 
-void APickUpActor::Respawn()
-{
-	if (BP_PowerUpActor)
-	{
-		FActorSpawnParameters SpawnParams;
-		SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
 
-		PowerUpIntance = GetWorld()->SpawnActor<APowerUpActor>(BP_PowerUpActor,GetTransform(),SpawnParams);
-	}
-}
 
 void APickUpActor::NotifyActorBeginOverlap(AActor* OtherActor)
 {
@@ -66,4 +58,15 @@ void APickUpActor::NotifyActorBeginOverlap(AActor* OtherActor)
 
 	}
 
+}
+
+void APickUpActor::Respawn()
+{
+	if (BP_PowerUpActor)
+	{
+		FActorSpawnParameters SpawnParams;
+		SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+
+		PowerUpIntance = GetWorld()->SpawnActor<APowerUpActor>(BP_PowerUpActor, GetTransform(), SpawnParams);
+	}
 }

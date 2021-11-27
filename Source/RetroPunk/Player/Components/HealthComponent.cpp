@@ -8,7 +8,7 @@ UHealthComponent::UHealthComponent()
 {
 	// Set this component to be initialized when the game starts, and to be ticked every frame.  You can turn these features
 	// off to improve performance if you don't need them.
-	PrimaryComponentTick.bCanEverTick = true;
+	PrimaryComponentTick.bCanEverTick = false;
 
 	// ...
 }
@@ -42,6 +42,11 @@ void UHealthComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActo
 	// ...
 }
 
+float UHealthComponent::GetHealth() const
+{
+	return CurrentHealth;
+}
+
 
 #pragma region Funcion para Gestionar el dano
 
@@ -57,6 +62,22 @@ void UHealthComponent::HandleTakeAnyDamage(AActor* DamagedActor, float Damage, c
 	UE_LOG(LogTemp, Warning, TEXT("Health: %s"), *FString::SanitizeFloat(CurrentHealth));
 
 	OnHealthChanged.Broadcast(this,CurrentHealth,Damage,DamageType,InstigatedBy,DamageCauser);
+
+}
+
+void UHealthComponent::HandleHealPowerUp(float HealAmount)
+{
+	if (HealAmount <= 0.0f || CurrentHealth <= 0.0f)
+	{
+		return;
+	}
+
+
+	CurrentHealth = FMath::Clamp(CurrentHealth + HealAmount,0.0f,DefaultHealth);
+
+	UE_LOG(LogTemp, Warning, TEXT("Health Changed: %s (+%s)"), *FString::SanitizeFloat(CurrentHealth), *FString::SanitizeFloat(HealAmount));
+
+	OnHealthChanged.Broadcast(this,CurrentHealth,-HealAmount,nullptr,nullptr,nullptr);
 
 }
 

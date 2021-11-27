@@ -67,7 +67,7 @@ void ATestCharacter::BeginPlay()
 	//Aqui se manda a llamar la funcionpara spawnear el arma en el brazo del player cuando inicie el juego
 	SpawnWeapon();
 
-	HealthComponent->OnHealthChanged.AddDynamic(this,&ATestCharacter::OnHealthChanged);
+	HealthComponent->OnHealthChanged.AddDynamic(this,&ATestCharacter::OnHealthChangedComponent);
 
 	PlayerControllerRef = Cast<APlayerController>(GetController());
 	
@@ -253,7 +253,7 @@ void ATestCharacter::ResetDash()
 
 
 
-void ATestCharacter::OnHealthChanged(UHealthComponent* OwningHealthComponent, float Health, float HealthDelta, const UDamageType* DamageType, AController* InstigatedBy, AActor* DamageCauser)
+void ATestCharacter::OnHealthChangedComponent(UHealthComponent* OwningHealthComponent, float Health, float HealthDelta, const UDamageType* DamageType, AController* InstigatedBy, AActor* DamageCauser)
 {
 	if (Health <= 0.0f && !bDied)
 	{
