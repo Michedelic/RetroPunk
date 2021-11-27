@@ -10,6 +10,8 @@
 #include "Components/CapsuleComponent.h"
 #include "../../RetroPunk.h"
 #include "DrawDebugHelpers.h"
+#include "../Actors/PoolableActor.h"
+#include "Kismet/KismetMathLibrary.h"
 
 // Sets default values
 ATestCharacter::ATestCharacter()
@@ -50,8 +52,9 @@ ATestCharacter::ATestCharacter()
 
 	GetCapsuleComponent()->SetCollisionResponseToChannel(ECC_Pawn, ECR_Ignore);
 
-}
 
+	ComponentPool = CreateDefaultSubobject<UObjectComponentPool>(TEXT("Poolable Actor Component"));
+}
 
 
 
@@ -95,6 +98,7 @@ static void InitializeInputs()
 		//Generarndo Inputs para Acciones (Disparos,Salto,etc...)
 		UPlayerInput::AddEngineDefinedActionMapping(FInputActionKeyMapping(FName("Fire"),EKeys::LeftMouseButton));
 		UPlayerInput::AddEngineDefinedActionMapping(FInputActionKeyMapping(FName("Dash"), EKeys::SpaceBar));
+		//UPlayerInput::AddEngineDefinedActionMapping(FInputActionKeyMapping(FName("")));
 	}
 }
 
@@ -143,6 +147,8 @@ void ATestCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompo
 	//Entradas para Acciones (Disparos,etc...)
 	PlayerInputComponent->BindAction(FName("Fire"),EInputEvent::IE_Pressed,this,&ATestCharacter::Fire);
 	PlayerInputComponent->BindAction(FName("Dash"), EInputEvent::IE_Pressed, this, &ATestCharacter::Dash);
+	//PlayerInputComponent->BindAction(FName("Dash"),EInputEvent::IE_Pressed,this,&ATestCharacter::SpawnPoolObject);
+	PlayerInputComponent->BindAction(FName("Dash"), EInputEvent::IE_Released, this, &ATestCharacter::WaitToClear);
 }
 
 
@@ -189,8 +195,11 @@ void ATestCharacter::Fire()
 	if (AWeapon* WP = Cast<AWeapon>(UGameplayStatics::GetActorOfClass(this,AWeapon::StaticClass())))
 	{
 		WP->WeaponFire();
+
+		
 	}
 
+	
 }
 
 
@@ -221,6 +230,7 @@ void ATestCharacter::Dash()
 		LaunchCharacter(FVector(GetLastMovementInputVector().X,GetLastMovementInputVector().Y,0.0f).GetSafeNormal() * DashDistance,true,true);
 		bCanDash = false;
 		GetWorldTimerManager().SetTimer(UnusedHandle,this,&ATestCharacter::StopDash,DashStop,false);
+		SpawnPoolObject();
 	}
 }
 
@@ -292,6 +302,48 @@ void ATestCharacter::RotateCharacter(FVector LookAtTarget)
 	
 
 }
+
+
+#pragma region Funciones del Pool Object
+
+float ATestCharacter::GetLifespan()
+{
+	return UKismetMathLibrary::RandomFloatInRange(LifespanMin, LifespanMax);
+}
+
+FVector ATestCharacter::GetRandomPointInVolume()
+{
+	FVector SpawnOrigin = BoxComponent->Bounds.Origin;
+	FVector SpawnExtent = BoxComponent->Bounds.BoxExtent;
+
+	return UKismetMathLibrary::RandomPointInBoundingBox(SpawnOrigin,SpawnExtent);
+}
+
+void ATestCharacter::SpawnPoolObject()
+{
+	APoolableActor* PoolableActor = ComponentPool->GetObjectPool();
+
+	PoolableActor->SetActorLocation(GetActorLocation());
+	PoolableActor->SetLifeSpan(GeneralLifeSpan);
+	PoolableActor->SetActive(true);
+	//PoolableActor->execK2_SetActorRotation()
+	PoolableActor->SetActorRotation(GetActorRotation());
+
+	GetWorldTimerManager().SetTimer(SpawnCooldown_TimerHandle,this,&ATestCharacter::SpawnPoolObject,SpawnCooldown,false);
+}
+
+void ATestCharacter::ClearSpawnPoolingTime()
+{
+	GetWorldTimerManager().ClearTimer(SpawnCooldown_TimerHandle);
+}
+
+void ATestCharacter::WaitToClear()
+{
+	GetWorldTimerManager().SetTimer(FinishCooldownHandle, this, &ATestCharacter::ClearSpawnPoolingTime, SpawnCooldown, false);
+}
+
+#pragma endregion
+
 
 
 

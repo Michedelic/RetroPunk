@@ -8,6 +8,8 @@
 #include "Camera/CameraComponent.h"
 #include "../Actors/Weapon.h"
 #include "../Components/HealthComponent.h"
+#include "../ActorComponents/ObjectComponentPool.h"
+#include "Components/BoxComponent.h"
 #include "TestCharacter.generated.h"
 
 UCLASS()
@@ -53,6 +55,48 @@ public:
 	 UFUNCTION(BlueprintCallable,Category=Player)
 	 void RotateCharacter(FVector LookAtTarget);
 
+
+	 //Seccion de Pool
+	 UPROPERTY(EditAnywhere,BlueprintReadWrite,Category=Pool)
+	 UObjectComponentPool* ComponentPool = nullptr;
+
+	 float GetLifespan();
+
+	 FVector GetRandomPointInVolume();
+
+	 //volumen de spawneo
+	 UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Pool)
+	 UBoxComponent* BoxComponent = nullptr;
+
+	 UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Pool)
+	 float LifespanMin = 0.5f;
+
+	 UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Pool)
+		 float LifespanMax = 5.0f;
+
+	 UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Pool)
+		 float GeneralLifeSpan = 0.3f;
+
+	 UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Pool)
+		 float SpawnCooldown = 1.5f;
+
+	FTimerHandle SpawnCooldown_TimerHandle;
+
+	FTimerHandle FinishCooldownHandle;
+
+	/* turns spawner into a crude 'firework / sparkler' system */
+	UPROPERTY(EditAnywhere, Category = "Spawner")
+		bool SparklingMode = false;
+
+	/* sparkles velocity */
+	UPROPERTY(EditAnywhere, Category = "Spawner")
+		float SparklesVelocity = 100.f;
+
+	void SpawnPoolObject();
+
+	void ClearSpawnPoolingTime();
+
+	void WaitToClear();
 
 protected:
 	// Called when the game starts or when spawned

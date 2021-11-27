@@ -82,6 +82,7 @@ void AWeapon::WeaponFire()
 
 		DrawDebugLine(GetWorld(),MuzzleLocation,TraceEnd,FColor::Orange,false,1.0f,0,3.0f);
 
+		UE_LOG(LogTemp, Warning, TEXT("DISPARANDO SIN RAYO DSDE WEAPON :)"));
 	}
 
 
