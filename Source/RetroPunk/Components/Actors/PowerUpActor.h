@@ -7,6 +7,7 @@
 #include "../../Player/Characters/TestCharacter.h"
 #include "Components/StaticMeshComponent.h"
 #include "Components/PointLightComponent.h"
+#include "Sound/SoundCue.h"
 #include "PowerUpActor.generated.h"
 
 UCLASS()
@@ -53,6 +54,9 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = PowerUp)
 		float HealingAmount = 20.0f;
+
+	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category=PowerUp)
+	USoundCue* SoundFX = nullptr;
 
 	void PowerUpActivated();
 

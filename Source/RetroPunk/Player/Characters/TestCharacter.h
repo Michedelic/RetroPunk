@@ -10,6 +10,7 @@
 #include "../Components/HealthComponent.h"
 #include "../ActorComponents/ObjectComponentPool.h"
 #include "Components/BoxComponent.h"
+#include "Sound/SoundCue.h"
 #include "TestCharacter.generated.h"
 
 UCLASS()
@@ -120,6 +121,9 @@ public:
 	UFUNCTION(BlueprintCallable,Category="Player")
 	void Fire();
 
+	UFUNCTION(BlueprintCallable, Category = "Player")
+		void StopFire();
+
 	UFUNCTION(BlueprintCallable,Category="Player")
 	void SpawnWeapon();
 
@@ -129,6 +133,8 @@ public:
 
 	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category="Player")
 	bool bDied = false;
+
+	
 
 private:
 	

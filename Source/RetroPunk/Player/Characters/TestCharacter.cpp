@@ -146,6 +146,8 @@ void ATestCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompo
 
 	//Entradas para Acciones (Disparos,etc...)
 	PlayerInputComponent->BindAction(FName("Fire"),EInputEvent::IE_Pressed,this,&ATestCharacter::Fire);
+	PlayerInputComponent->BindAction(FName("Fire"), EInputEvent::IE_Released, this, &ATestCharacter::StopFire);
+
 	PlayerInputComponent->BindAction(FName("Dash"), EInputEvent::IE_Pressed, this, &ATestCharacter::Dash);
 	//PlayerInputComponent->BindAction(FName("Dash"),EInputEvent::IE_Pressed,this,&ATestCharacter::SpawnPoolObject);
 	PlayerInputComponent->BindAction(FName("Dash"), EInputEvent::IE_Released, this, &ATestCharacter::WaitToClear);
@@ -194,12 +196,23 @@ void ATestCharacter::Fire()
 
 	if (AWeapon* WP = Cast<AWeapon>(UGameplayStatics::GetActorOfClass(this,AWeapon::StaticClass())))
 	{
-		WP->WeaponFire();
+		WP->StartFire();
 
+		
 		
 	}
 
 	
+}
+
+void ATestCharacter::StopFire()
+{
+	if (AWeapon* WP = Cast<AWeapon>(UGameplayStatics::GetActorOfClass(this, AWeapon::StaticClass())))
+	{
+		WP->StopFire();
+
+
+	}
 }
 
 

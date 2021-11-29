@@ -3,6 +3,8 @@
 
 #include "Weapon.h"
 #include "DrawDebugHelpers.h"
+#include "Particles/ParticleSystemComponent.h"
+#include "Kismet/GameplayStatics.h"
 #include "../../RetroPunk.h"
 
 // Sets default values
@@ -16,10 +18,14 @@ AWeapon::AWeapon()
 
 }
 
+
+
 // Called when the game starts or when spawned
 void AWeapon::BeginPlay()
 {
 	Super::BeginPlay();
+
+	TimeBetweenShots = 60 / FireRate;
 	
 }
 
@@ -60,6 +66,8 @@ void AWeapon::WeaponFire()
 		FVector TraceEnd = MuzzleLocation +  ( ShotDirection * 20000.0f);
 
 		
+		//Particle Target
+		FVector TracerEndPoint = TraceEnd;
 
 		FHitResult Hit;
 
@@ -67,6 +75,7 @@ void AWeapon::WeaponFire()
 		QueryParams.AddIgnoredActor(MyOwner);
 		QueryParams.AddIgnoredActor(this);
 		QueryParams.bTraceComplex = true;
+		QueryParams.bReturnPhysicalMaterial = true;
 
 		//Particle Target
 		//FVector TracerEndPoint = TraceEnd;
@@ -78,6 +87,45 @@ void AWeapon::WeaponFire()
 
 			UGameplayStatics::ApplyDamage(HitActor,Damage,MyOwner->GetInstigatorController(),this,DamageType);
 
+			//Aplicar el efecto al momento de disparar
+			UParticleSystem* SelectedEffect = nullptr;
+
+			if (SelectedEffect)
+			{
+				UGameplayStatics::SpawnEmitterAtLocation(GetWorld(),SelectedEffect,Hit.ImpactPoint,Hit.ImpactNormal.Rotation());
+			}
+
+			TracerEndPoint = Hit.ImpactPoint;
+
+			
+
+		}
+
+
+		LastTimeFired = GetWorld()->TimeSeconds;
+
+		//agregar un efecto en el socket ,que es el muzzle en este caso
+		if (MuzzleEffect)
+		{
+			UGameplayStatics::SpawnEmitterAttached(MuzzleEffect, WeaponMesh, MuzzleSocketName);
+		}
+
+		if (TracerEffect)
+		{
+			FVector ML = WeaponMesh->GetSocketLocation(MuzzleSocketName);
+
+			UParticleSystemComponent* TracerComponent = UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), TracerEffect, ML);
+
+			if (TracerComponent)
+			{
+				TracerComponent->SetVectorParameter(TracerTargetName, TracerEndPoint);
+			}
+
+		}
+
+		if (FireSoundFX)
+		{
+			UGameplayStatics::PlaySound2D(GetWorld(), FireSoundFX);
 		}
 
 		DrawDebugLine(GetWorld(),MuzzleLocation,TraceEnd,FColor::Orange,false,1.0f,0,3.0f);
@@ -92,3 +140,14 @@ void AWeapon::WeaponFire()
 #pragma endregion
 
 
+void AWeapon::StartFire()
+{
+	float FirstDelay = FMath::Max(LastTimeFired + TimeBetweenShots - GetWorld()->TimeSeconds,0.0f);
+
+	GetWorldTimerManager().SetTimer(TimerHandle_BetweenShots,this,&AWeapon::WeaponFire,TimeBetweenShots,true,FirstDelay);
+}
+
+void AWeapon::StopFire()
+{
+	GetWorldTimerManager().ClearTimer(TimerHandle_BetweenShots);
+}

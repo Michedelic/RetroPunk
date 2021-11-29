@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Components/ActorComponent.h"
+#include "Sound/SoundCue.h"
 #include "HealthComponent.generated.h"
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_SixParams(FOnHealthChangedSignature, UHealthComponent*, healthComponent, float, Health, float, HealthDelta, const class UDamageType*, DamageType, class AController*, InstigatedBy, AActor*, DamageCauser);
@@ -30,6 +31,10 @@ public:
 	//Funcion para aumentar vida como Power Up
 	UFUNCTION(BlueprintCallable,Category=PowerUp)
 	void HandleHealPowerUp(float HealAmount);
+
+
+	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category=Player)
+	USoundCue* SoundFX = nullptr;
 
 protected:
 	// Called when the game starts

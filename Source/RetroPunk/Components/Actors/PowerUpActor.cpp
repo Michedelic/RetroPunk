@@ -78,6 +78,11 @@ void APowerUpActor::ActivatePowerUp()
 
 	//OnExpired();
 
+	if (SoundFX)
+	{
+		UGameplayStatics::PlaySound2D(this,SoundFX);
+	}
+
 	if (PowerUpInterval > 0.0f)
 	{
 		GetWorldTimerManager().SetTimer(TimerHandle_PowerupTick, this, &APowerUpActor::OnTickPowerUp, PowerUpInterval, true);
@@ -108,11 +113,12 @@ void APowerUpActor::ExpirePowerUp()
 
 void APowerUpActor::FPowerUpTicked()
 {
-	if (PlayerCharacter->HealthComponent)
-	{
+	/*if (PlayerCharacter->HealthComponent)
+	{*/
+		PrefabMesh->SetVisibility(false, true);
 		PlayerCharacter->HealthComponent->HandleHealPowerUp(HealingAmount);
-		PrefabMesh->SetVisibility(false,true);
-	}
+		
+	//}
 }
 
 #pragma endregion

@@ -2,6 +2,7 @@
 
 
 #include "HealthComponent.h"
+#include "Kismet/GameplayStatics.h"
 
 // Sets default values for this component's properties
 UHealthComponent::UHealthComponent()
@@ -54,10 +55,19 @@ void UHealthComponent::HandleTakeAnyDamage(AActor* DamagedActor, float Damage, c
 {
 	if (CurrentHealth <= 0.0f)
 	{
+		//UGameplayStatics::PlaySound2D(this, SoundFX);
+
 		return;
 	}
 
+
+	
 	CurrentHealth = FMath::Clamp(CurrentHealth - Damage,0.0f,DefaultHealth);
+
+	if (CurrentHealth > 0.0f && CurrentHealth <= 25.0f)
+	{
+		UGameplayStatics::PlaySound2D(this,SoundFX);
+	}
 
 	UE_LOG(LogTemp, Warning, TEXT("Health: %s"), *FString::SanitizeFloat(CurrentHealth));
 
