@@ -5,7 +5,9 @@
 #include "DrawDebugHelpers.h"
 #include "Particles/ParticleSystemComponent.h"
 #include "Kismet/GameplayStatics.h"
+#include "PhysicalMaterials/PhysicalMaterial.h"
 #include "../../RetroPunk.h"
+
 
 // Sets default values
 AWeapon::AWeapon()
@@ -81,19 +83,50 @@ void AWeapon::WeaponFire()
 		//FVector TracerEndPoint = TraceEnd;
 
 
-		if (GetWorld()->LineTraceSingleByChannel(Hit,MuzzleLocation,TraceEnd, ECC_Visibility, QueryParams))
+		if (GetWorld()->LineTraceSingleByChannel(Hit,MuzzleLocation,TraceEnd, COLLISION_WEAPON, QueryParams))
 		{
 			AActor* HitActor = Hit.GetActor();
 
-			UGameplayStatics::ApplyDamage(HitActor,Damage,MyOwner->GetInstigatorController(),this,DamageType);
+			float ActualDamage = Damage;
+
+			//seccion para distinguir el material de fisicas para el dano
+			//EPhysicalSurface Surface = UPhysicalMaterial::
+			EPhysicalSurface Surface = UPhysicalMaterial::DetermineSurfaceType(Hit.PhysMaterial.Get());
+
+			if (Surface == SURFACE_FLESHVULNERABLE)
+			{
+				ActualDamage *= 2;
+			}
+
+
+			UGameplayStatics::ApplyDamage(HitActor, ActualDamage,MyOwner->GetInstigatorController(),this,DamageType);
 
 			//Aplicar el efecto al momento de disparar
 			UParticleSystem* SelectedEffect = nullptr;
 
+			//switch para ver en que superficie se dispara , ya sea a un enemigo u otro objeto
+			switch (Surface)
+			{
+				case SURFACE_FLESHDEFAULT:
+				case SURFACE_FLESHVULNERABLE:
+				 SelectedEffect = FleshImpactEffect;
+				break;
+
+				default:
+					SelectedEffect = ImpactEffect;
+				break;
+			}
+
+
 			if (SelectedEffect)
 			{
 				UGameplayStatics::SpawnEmitterAtLocation(GetWorld(),SelectedEffect,Hit.ImpactPoint,Hit.ImpactNormal.Rotation());
+
+
 			}
+
+			//UGameplayStatics::SpawnEmitterAtLocation(GetWorld(),ImpactEffect,Hit.ImpactPoint,Hit.ImpactNormal.Rotation());
+
 
 			TracerEndPoint = Hit.ImpactPoint;
 
@@ -128,9 +161,9 @@ void AWeapon::WeaponFire()
 			UGameplayStatics::PlaySound2D(GetWorld(), FireSoundFX);
 		}
 
-		DrawDebugLine(GetWorld(),MuzzleLocation,TraceEnd,FColor::Orange,false,1.0f,0,3.0f);
+		//DrawDebugLine(GetWorld(),MuzzleLocation,TraceEnd,FColor::Orange,false,1.0f,0,3.0f);
 
-		UE_LOG(LogTemp, Warning, TEXT("DISPARANDO SIN RAYO DSDE WEAPON :)"));
+		//UE_LOG(LogTemp, Warning, TEXT("DISPARANDO SIN RAYO DSDE WEAPON :)"));
 	}
 
 

@@ -5,5 +5,5 @@
 
 IMPLEMENT_PRIMARY_GAME_MODULE( FDefaultGameModuleImpl, RetroPunk, "RetroPunk" );
 
-DEFINE_LOG_CATEGORY(LogRetroPunk)
+//DEFINE_LOG_CATEGORY(LogRetroPunk)
  

@@ -4,6 +4,10 @@
 
 #include "CoreMinimal.h"
 
-DECLARE_LOG_CATEGORY_EXTERN(LogRetroPunk, Log, All);
+//DECLARE_LOG_CATEGORY_EXTERN(LogRetroPunk, Log, All);
 
-//#define COLLISION_WEAPON		ECC_GameTraceChannel1
+
+#define SURFACE_FLESHDEFAULT	SurfaceType1
+#define SURFACE_FLESHVULNERABLE SurfaceType2
+
+#define COLLISION_WEAPON		ECC_GameTraceChannel1
