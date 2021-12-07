@@ -210,8 +210,6 @@ void ATestCharacter::StopFire()
 	if (AWeapon* WP = Cast<AWeapon>(UGameplayStatics::GetActorOfClass(this, AWeapon::StaticClass())))
 	{
 		WP->StopFire();
-
-
 	}
 }
 
@@ -285,9 +283,15 @@ void ATestCharacter::OnHealthChangedComponent(UHealthComponent* OwningHealthComp
 
 		GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 
-		SetLifeSpan(10.0f);
+		//SetLifeSpan(10.0f);
 
 		//PlayerControllerRef->bEnableMouseOverEvents = false;
+
+		if (PlayerDeathSoundFX)
+		{
+			UGameplayStatics::PlaySound2D(this, PlayerDeathSoundFX);
+		}
+		
 
 	}
 }

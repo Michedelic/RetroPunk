@@ -64,7 +64,7 @@ void UHealthComponent::HandleTakeAnyDamage(AActor* DamagedActor, float Damage, c
 	
 	CurrentHealth = FMath::Clamp(CurrentHealth - Damage,0.0f,DefaultHealth);
 
-	if (CurrentHealth > 0.0f && CurrentHealth <= 25.0f)
+	if (CurrentHealth > 0.0f && CurrentHealth <= 50.0f)
 	{
 		UGameplayStatics::PlaySound2D(this,SoundFX);
 	}

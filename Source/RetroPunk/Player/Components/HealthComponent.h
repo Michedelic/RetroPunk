@@ -19,7 +19,7 @@ public:
 	UHealthComponent();
 
 	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category=Player)
-	float DefaultHealth = 40.0f;
+	float DefaultHealth = 100.0f;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Player)
 		float CurrentHealth = 0.0f;

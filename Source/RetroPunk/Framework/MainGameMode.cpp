@@ -4,11 +4,15 @@
 #include "MainGameMode.h"
 #include "Kismet/GameplayStatics.h"
 #include "../Game/Pawns/BallGoal.h"
+#include "TimerManager.h"
 
 AMainGameMode::AMainGameMode()
 {
 	HUDClass = ADebugHUD::StaticClass();
+
+	PlayerCharacter = Cast<ATestCharacter>(UGameplayStatics::GetActorOfClass(this, ATestCharacter::StaticClass()));
 }
+
 
 void AMainGameMode::BeginPlay()
 {
@@ -47,7 +51,7 @@ void AMainGameMode::Tick(float DeltaTime)
 
 
 	//Si todas los ball goals tienen un ball en su centro gana y se visualiza cuanto tiempo ha transcurrido
-	if (numGoals == 1 && bFinished == true)
+	if (numGoals == 2 && bFinished == true)
 	{
 		FinishedTime += DeltaTime;
 	}
@@ -70,12 +74,51 @@ void AMainGameMode::Tick(float DeltaTime)
 	}
 
 	//si el juego ha terminado por lo menos igual o mayor a 15 segundos, resetea el juego al inicio
-	if (FinishedTime > 10.0f)
+	if (FinishedTime > 5.0f)
 	{
 
 		Super::RestartGame();
 
 	}
 
+	//RestartWhenPlayerDies(DeltaTime);
+
+	if (PlayerCharacter->bDied)
+	{
+		//GetWorldTimerManager().SetTimer(RestartPlayer_TimerHandle,this,&AMainGameMode::RestartWhenPlayerDies,0.6f,true);
+		FinishedTimePlayer += DeltaTime;
+
+	}
+	else {
+		FinishedTimePlayer = 0.0f;
+	}
+
+	if (FinishedTimePlayer > 2.0f)
+	{
+		Super::RestartGame();
+	}
+	
+
+}
+
+void AMainGameMode::RestartWhenPlayerDies(float DeltaTime)
+{
+
+	if (PlayerCharacter->bDied)
+	{
+		//GetWorldTimerManager().SetTimer(RestartPlayer_TimerHandle,this,&AMainGameMode::RestartWhenPlayerDies,0.6f,true);
+		FinishedTime += DeltaTime;
+
+		if (FinishedTime > 0.5f)
+		{
+			Super::RestartGame();
+		}
+		
+	}else{
+		FinishedTime = 0.0f;
+	}
+	
+		
+	
 }
 

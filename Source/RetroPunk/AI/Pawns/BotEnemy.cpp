@@ -99,6 +99,12 @@ void ABotEnemy::SelfDestruction()
 	DrawDebugSphere(GetWorld(),GetActorLocation(),ExplosionRadius,12,FColor::Red,false,2.0f,0,1.0f);
 
 
+	if (ExplosionFX)
+	{
+		UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), ExplosionFX, GetActorLocation());
+	}
+	
+
 	Destroy();
 }
 
@@ -167,5 +173,5 @@ void ABotEnemy::NotifyActorBeginOverlap(AActor* OtherActor)
 
 void ABotEnemy::DamageSelf()
 {
-	UGameplayStatics::ApplyDamage(this,10.0f,GetInstigatorController(),this,nullptr);
+	UGameplayStatics::ApplyDamage(this,30.0f,GetInstigatorController(),this,nullptr);
 }

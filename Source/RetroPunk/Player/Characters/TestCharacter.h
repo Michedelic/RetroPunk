@@ -134,7 +134,8 @@ public:
 	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category="Player")
 	bool bDied = false;
 
-	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Player")
+	USoundCue* PlayerDeathSoundFX = nullptr;
 
 private:
 	

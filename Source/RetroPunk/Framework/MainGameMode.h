@@ -6,6 +6,7 @@
 #include "GameFramework/GameMode.h"
 #include "../Player/HUD/DebugHUD.h"
 #include "Sound/SoundCue.h"
+#include "../Player/Characters/TestCharacter.h"
 #include "MainGameMode.generated.h"
 
 /**
@@ -26,6 +27,15 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = RetroPunk)
 		USoundCue* FinishedSoundFX = nullptr;
 
+
+	FTimerHandle RestartPlayer_TimerHandle;
+
+	ATestCharacter* PlayerCharacter;
+
+
+	void RestartWhenPlayerDies(float DeltaTime);
+
+
 protected:
 
 	virtual void BeginPlay() override;
@@ -42,4 +52,7 @@ private:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = RetroPunk, meta = (AllowPrivateAccess = true))
 		bool FinishedSoundPlayed = false;
 	
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = RetroPunk, meta = (AllowPrivateAccess = true))
+		float FinishedTimePlayer = 0.0f;
 };
