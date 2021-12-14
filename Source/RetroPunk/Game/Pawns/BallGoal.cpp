@@ -37,7 +37,9 @@ void ABallGoal::PostInitializeComponents()
 
 	
 
+#if WITH_EDITORONLY_DATA
 	GetSpriteComponent()->SetHiddenInGame(true);
+#endif
 
 
 }
