@@ -237,6 +237,7 @@ void ATestCharacter::Dash()
 {
 	if (bCanDash)
 	{
+		bIsDashing = true;
 		GetCharacterMovement()->BrakingFrictionFactor = 0.0f;
 		LaunchCharacter(FVector(GetLastMovementInputVector().X,GetLastMovementInputVector().Y,0.0f).GetSafeNormal() * DashDistance,true,true);
 		bCanDash = false;
@@ -250,6 +251,7 @@ void ATestCharacter::StopDash()
 	GetCharacterMovement()->StopMovementImmediately();
 	GetCharacterMovement()->BrakingFrictionFactor = 2.0f;
 	GetWorldTimerManager().SetTimer(UnusedHandle,this,&ATestCharacter::ResetDash, DashCooldown,false);
+	bIsDashing = false;
 }
 
 void ATestCharacter::ResetDash()

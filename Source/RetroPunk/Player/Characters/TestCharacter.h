@@ -150,6 +150,8 @@ private:
 	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category=Player,meta=(AllowPrivateAccess = true))
 	bool bIsFiring = false;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Player, meta = (AllowPrivateAccess = true))
+	bool bIsDashing = false;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Player, meta = (AllowPrivateAccess = true))
 		float DashDistance = 3000.0f;
